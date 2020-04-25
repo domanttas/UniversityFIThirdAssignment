@@ -1,8 +1,8 @@
-from utils import load, plot_data, plot_calculated_data, plot_profit, get_ma, get_lower_band, get_upper_band, get_positions, plot_comparison
+from utils import load, plot_data, plot_calculated_data, plot_profit, get_ma, get_lower_band, get_upper_band, get_positions, plot_comparison, stop_loss
 import pandas as pd
 
 
-data = load('./second_data_sample.csv')
+data = load('./first_data_sample.csv')
 starting_data = data.copy()
 
 
@@ -20,13 +20,13 @@ data = get_positions(data)
 # Plot start data
 plot_data(data, 'Close', '100MA', 'UpperBand', 'LowerBand')
 
-
 # Plot strategy data
 plot_calculated_data(data, 'Close', '100MA', 'UpperBand',
                      'LowerBand', 'Without optimization')
 
-# Plot profit without optimisation
-data['Return'] = data['Close'].pct_change()
+# Plot profit without optimization
+data['Trade'] = data['Close'] + data['TradeCost']
+data['Return'] = data['Trade'].pct_change()
 data['Strategy return'] = data['Return'] * data['Position']
 plot_profit(data, 'Without optimization')
 
@@ -92,8 +92,9 @@ best_data = get_positions(best_data)
 plot_calculated_data(best_data, 'Close', '100MA',
                      'UpperBand', 'LowerBand', 'Optimized')
 
-# Plot profit without optimisation
-best_data['Return'] = best_data['Close'].pct_change()
+# Plot profit with optimization
+best_data['Trade'] = best_data['Close'] + best_data['TradeCost']
+best_data['Return'] = best_data['Trade'].pct_change()
 best_data['Strategy return'] = best_data['Return'] * best_data['Position']
 
 plot_profit(best_data, 'Optimized')
